@@ -23,7 +23,7 @@ function httpResponse:sendHeader(status, header)
     status = status or 200;
     header = header or {};
 
-    local data = string.format("HTTP/1.1 %s\r\n%s\r\n\r\n",
+    local data = string.format("HTTP/1.1 %s\r\nCache-Control: no-cache\r\n%s\r\n\r\n",
         status,
         table.concat(header, "\r\n")
     );

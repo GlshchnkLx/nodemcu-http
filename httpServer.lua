@@ -67,29 +67,26 @@ function httpServer:start()
             local response = httpResponse.new(responseRaw);
             local request = httpRequest.new(requestRaw);
 
+            local routeFinded = false;
             for routeIndex, routeObject in pairs(self.routes or {}) do
-                if request.start.uri:find(routeObject.uri) and routeObject.callback then
+                if request.start.uri:find("^" .. routeObject.uri .."$") and routeObject.callback then
                     routeObject.callback(response, request);
+                    routeFinded = true;
                     break;
                 end
             end
 
+            if routeFinded == false then
+                response:remove();
+            end
             request:remove();
         end);
     end);
 end
 
 function httpServer:stop()
-    if self.tcpSocket then
-        self.tcpSocket:on('sent', function() end);
-        self.tcpSocket:on('receive', function() end);
-        self.tcpSocket:close();
-    end
-
-    if self.tcpServer then
-        self.tcpServer:close();
-        self.tcpServer = nil;
-    end
+    --TODO
+    collectgarbage();
 end
 
 
@@ -104,10 +101,12 @@ end
 
 function httpServer:routeRemove(uri)
     for routeIndex = #self.routes, 1, -1 do
-        local routeObject = self.route[routeIndex];
+        local routeObject = self.routes[routeIndex];
 
-        if request.starting.uri:find(routeObject.uri) then
+        if uri == routeObject.uri then
             table.remove(self.routes, routeIndex);
         end
     end
+
+    collectgarbage();
 end

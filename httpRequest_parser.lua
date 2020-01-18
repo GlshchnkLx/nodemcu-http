@@ -17,7 +17,7 @@ return function(raw)
         request.start.uri, request.start._query = request.start.uri:match("([^?]+)?*(.*)");
         request.start._query = urlDecode(request.start._query);
         request.start.query = {};
-    
+
         for option, value in request.start._query:gmatch("([^&]+)=([^&]*)&*") do
             request.start.query[option] = value;
         end
